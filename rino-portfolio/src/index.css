@@ -1,0 +1,241 @@
+:root {
+  --bg: #0f172a;        /* page background */
+  --card: #1e293b;      /* card (lighter than bg) */
+  --border: #334155;    /* subtle outline */
+  --text: #e2e8f0;      /* bright text */
+  --muted: #94a3b8;
+  --primary: #3b82f6;   /* Add this: a nice tech blue */
+  --surface: #1e293b;
+}
+
+.header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px;
+  background-color: var(--surface);
+  border-bottom: 1px solid #334155;
+  border-bottom: 1px solid var(--border);
+  font-family: 'Inter', sans-serif;
+}
+
+.header h1{
+  color: var(--text);
+  font-size: 20px;
+}
+
+button {
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+}
+
+button:hover {
+  background-color: rgba(59, 130, 246, 0.1); /* Subtle blue tint */
+  border-color: #60a5fa;
+}
+
+body {
+  background-color: var(--bg);
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+
+}
+
+.card {
+  background-color: var(--card);
+  color: var(--text);
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  margin: 10px;
+
+  max-width: 700px;   /* prevents super wide text */
+  line-height: 1.6;   /* easier to read */
+  transition: 0.2s ease;
+}
+
+.card h2 {
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+.card p {
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.card ul {
+  padding-left: 18px;
+  color: var(--text);
+}
+
+.card li {
+  margin-bottom: 6px;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.status-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.05em;
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-completed {
+  color: #10b981;
+  background-color: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.status-progress {
+  color: #f59e0b;
+  background-color: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.status-progress::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background-color: #f59e0b;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #f59e0b;
+  animation: status-pulse 1.5s infinite;
+}
+
+@keyframes status-pulse {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.2); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* The semi-transparent background */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(15, 23, 42, 0.85); /* Slightly transparent version of your --bg */
+  backdrop-filter: blur(4px); /* Modern glass effect */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+/* The floating card */
+.modal-content {
+  background-color: var(--card);
+  padding: 32px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s ease;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.mono-text {
+  font-family: 'Space Mono', monospace;
+  color: var(--primary);
+  margin: 0;
+}
+
+/* Form Styling */
+.form-group {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.form-group input, .form-group textarea {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.submit-btn {
+  width: 100%;
+  margin-top: 10px;
+  background: transparent;
+  cursor: pointer;
+  
+}
+
+.close-btn {
+  background: transparent;      /* Removes the white background */
+  border: none;                /* Removes the default button border */
+  color: var(--muted);         /* Makes it subtle by default */
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;          /* Matches your card's rounded vibe */
+  transition: all 0.2s ease;
+  width: auto;                 /* Prevents it from stretching */
+}
+
+.close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05); /* Very subtle hover highlight */
+  color: var(--text);          /* Brightens up on hover */
+  transform: rotate(90deg);    /* Optional: adds a cool techy rotation */
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
