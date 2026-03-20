@@ -892,8 +892,9 @@ button:hover {
 /* ── Back to top button ── */
 .back-to-top {
   position: fixed;
-  bottom: 32px;
-  right: 32px;
+  bottom: 24px;                        /* fallback for desktop */
+  bottom: max(24px, env(safe-area-inset-bottom, 24px)); /* respects iPhone notch/home bar */
+  right: 24px;
   width: 40px;
   height: 40px;
   border-radius: 8px;
@@ -908,15 +909,13 @@ button:hover {
   justify-content: center;
   z-index: 500;
  
-  /* Hidden by default */
   opacity: 0;
   transform: translateY(8px);
-  pointer-events: none; /* can't click when invisible */
+  pointer-events: none;
   transition: opacity 0.3s ease, transform 0.3s ease,
-              color 0.2s, border-color 0.2s, background 0.2s;
+              color 0.2s, border-color 0.2s, --background 0.2s;
 }
  
-/* Becomes visible when JS adds the 'visible' class */
 .back-to-top.visible {
   opacity: 1;
   transform: translateY(0);
@@ -930,25 +929,21 @@ button:hover {
   box-shadow: 0 0 16px rgba(56, 189, 248, 0.1);
 }
  
+ 
 /* ── Cursor glow ── */
 .cursor-glow {
-  position: fixed;
-  width: 500px;
-  height: 500px;
-  border-radius: 50%;
-  /* Radial gradient: bright center fading to transparent */
-  background: radial-gradient(
-    circle,
-    rgba(56, 189, 248, 0.05) 0%,
-    transparent 70%
-  );
-  /* Center the circle on the cursor */
-  transform: translate(-50%, -50%);
-  /* Sit behind all content but above the background */
-  z-index: 0;
-  pointer-events: none; /* never blocks clicks */
-  /* Small lag makes it feel like light, not a sticker */
-  transition: left 0.12s ease-out, top 0.12s ease-out;
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(56, 189, 248, 0.05) 0%,
+      transparent 70%
+    );
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
 }
  
 /* Make sure page sections sit above the glow */
