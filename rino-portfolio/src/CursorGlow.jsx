@@ -2,7 +2,8 @@ import {useEffect, useRef} from 'react'
 
 function CursorGlow(){
     const glowRef = useRef(null)
-    const rafRef = useRef(null)
+    const rafRef = useRef(null) 
+    const debug = ''
 
     useEffect(() => {
         const handleMouseMove = (e) => {

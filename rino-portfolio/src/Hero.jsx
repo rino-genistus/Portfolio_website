@@ -46,8 +46,7 @@ function Hero(){
             <p className="hero-eyebrow">// welcome to my portfolio</p>
         
             <h1 className="hero-title">
-                Building the future<br />
-                with <span>code & data.</span>
+                I just like building stuff.
             </h1>
         
             <div className="hero-typing">
