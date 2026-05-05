@@ -1,6 +1,6 @@
 import { FaGithub, FaLinkedinIn } from 'react-icons/fa'
 import { MdOutlineEmail } from 'react-icons/md'
- 
+
 function Footer() {
   return (
     <footer className="footer">
@@ -8,11 +8,14 @@ function Footer() {
         <span className="footer-prefix">&gt; </span>
         Rino Genistus Ruban
       </span>
- 
-      <span className="footer-copy">
-        © {new Date().getFullYear()} · Built with React
-      </span>
- 
+
+      <div className="footer-stack">
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--dim)' }}>built with</span>
+        <span className="footer-stack-chip">React</span>
+        <span className="footer-stack-chip">Vite</span>
+        <span className="footer-stack-chip">JetBrains Mono</span>
+      </div>
+
       <div className="footer-links">
         <a href="mailto:rino.genistus@gmail.com" className="footer-icon" title="Email">
           <MdOutlineEmail size={16} />
@@ -27,6 +30,5 @@ function Footer() {
     </footer>
   )
 }
- 
+
 export default Footer
- 
