@@ -134,6 +134,7 @@ export default function Terminal() {
       </div>
       <div
         ref={bodyRef}
+        data-lenis-prevent
         className="mono h-[340px] overflow-y-auto px-5 py-4 text-[13px] leading-relaxed"
       >
         {rendered.map((l, i) => renderLine(l, i))}

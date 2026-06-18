@@ -1,8 +1,10 @@
-import { useState } from 'react'
-import { AnimatePresence, motion } from 'motion/react'
+import { useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion, useMotionValue } from 'motion/react'
+import { useLenis } from 'lenis/react'
 import { FiGithub, FiArrowUpRight, FiX, FiArrowRight } from 'react-icons/fi'
 import { PROJECTS } from '../data'
 import { SectionHeader, EASE } from './primitives'
+import { useModalA11y } from '../hooks'
 
 const FILTERS = [
   { key: 'all', label: 'All' },
@@ -22,6 +24,16 @@ function StatusDot({ status, className = '' }) {
 
 /* ── Interactive index row ── */
 function Row({ project, n, onOpen }) {
+  const [hover, setHover] = useState(false)
+  const cx = useMotionValue(0)
+  const cy = useMotionValue(0)
+
+  const track = (e) => {
+    const r = e.currentTarget.getBoundingClientRect()
+    cx.set(e.clientX - r.left)
+    cy.set(e.clientY - r.top)
+  }
+
   return (
     <motion.button
       layout
@@ -31,11 +43,25 @@ function Row({ project, n, onOpen }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.6, ease: EASE }}
       onClick={onOpen}
+      onMouseMove={track}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
       data-cursor="hover"
       className="group relative block w-full overflow-hidden border-b border-line text-left"
     >
       {/* accent wipe fill */}
       <span className="absolute inset-0 -z-0 origin-left scale-x-0 bg-accent transition-transform duration-500 [transition-timing-function:var(--ease-out-expo)] group-hover:scale-x-100" />
+
+      {/* cursor-following View chip */}
+      <motion.span
+        aria-hidden
+        style={{ left: cx, top: cy }}
+        animate={{ opacity: hover ? 1 : 0, scale: hover ? 1 : 0.5 }}
+        transition={{ duration: 0.25, ease: EASE }}
+        className="mono pointer-events-none absolute z-20 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-1 rounded-full bg-ground px-3 py-1.5 text-[11px] text-ink shadow-lg shadow-black/30 sm:flex"
+      >
+        View <FiArrowUpRight size={12} />
+      </motion.span>
 
       <div className="relative z-10 flex items-center gap-4 px-2 py-6 transition-[padding] duration-500 group-hover:px-6 sm:gap-8 sm:py-8">
         <span className="mono w-8 shrink-0 text-xs text-dim transition-colors group-hover:text-accentInk/70">
@@ -64,6 +90,21 @@ function Row({ project, n, onOpen }) {
 }
 
 function DetailModal({ project, onClose }) {
+  const lenis = useLenis()
+  const panelRef = useRef(null)
+  useModalA11y(panelRef)
+  useEffect(() => {
+    const onKey = (e) => e.key === 'Escape' && onClose()
+    window.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    lenis?.stop()
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+      lenis?.start()
+    }
+  }, [onClose, lenis])
+
   if (!project) return null
   return (
     <motion.div
@@ -71,14 +112,20 @@ function DetailModal({ project, onClose }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={(e) => e.target === e.currentTarget && onClose()}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${project.name} — project details`}
       className="fixed inset-0 z-[80] flex items-end justify-center bg-ground/70 p-0 backdrop-blur-md sm:items-center sm:p-6"
     >
       <motion.div
+        ref={panelRef}
+        tabIndex={-1}
         initial={{ y: 40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 40, opacity: 0 }}
         transition={{ duration: 0.4, ease: EASE }}
-        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-t-3xl border border-line2 bg-surface p-7 sm:rounded-3xl sm:p-9"
+        data-lenis-prevent
+        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-t-3xl border border-line2 bg-surface p-7 outline-none sm:rounded-3xl sm:p-9"
       >
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>

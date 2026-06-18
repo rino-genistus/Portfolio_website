@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'motion/react'
+import { useLenis } from 'lenis/react'
 import { FiSun, FiMoon, FiArrowUpRight } from 'react-icons/fi'
 import { PROFILE } from '../data'
 import { useActiveSection, useTheme } from '../hooks'
-import { EASE } from './primitives'
+import { EASE, Magnetic } from './primitives'
 
 const LINKS = [
   { id: 'about', label: 'About', n: '01' },
@@ -15,6 +16,7 @@ export default function Nav({ onContact, ready }) {
   const [dark, toggleTheme] = useTheme()
   const [scrolled, setScrolled] = useState(false)
   const active = useActiveSection(['about', 'skills', 'projects'])
+  const lenis = useLenis()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -24,7 +26,8 @@ export default function Nav({ onContact, ready }) {
 
   const go = (id) => (e) => {
     e.preventDefault()
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    if (id === 'top') return lenis?.scrollTo(0, { duration: 1.2 })
+    lenis?.scrollTo(`#${id}`, { offset: -72, duration: 1.2 })
   }
 
   return (
@@ -85,14 +88,16 @@ export default function Nav({ onContact, ready }) {
           >
             Résumé
           </a>
-          <button
-            onClick={onContact}
-            data-cursor="hover"
-            className="group flex items-center gap-1.5 rounded-full bg-ink px-4 py-2 text-sm font-medium text-ground transition-colors"
-          >
-            Get in touch
-            <FiArrowUpRight className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-          </button>
+          <Magnetic strength={0.25}>
+            <button
+              onClick={onContact}
+              data-cursor="hover"
+              className="group flex items-center gap-1.5 rounded-full bg-ink px-4 py-2 text-sm font-medium text-ground transition-colors"
+            >
+              Get in touch
+              <FiArrowUpRight className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </button>
+          </Magnetic>
         </div>
       </div>
     </motion.header>

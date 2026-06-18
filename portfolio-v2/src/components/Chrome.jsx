@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, useScroll, useSpring, useMotionValue } from 'motion/react'
+import { useLenis } from 'lenis/react'
 import { FiArrowUp } from 'react-icons/fi'
 
 /* Top scroll-progress bar */
@@ -17,6 +18,7 @@ export function ScrollProgress() {
 /* Back-to-top */
 export function BackToTop() {
   const [show, setShow] = useState(false)
+  const lenis = useLenis()
   useEffect(() => {
     const onScroll = () => setShow(window.scrollY > 700)
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -28,7 +30,9 @@ export function BackToTop() {
     <motion.button
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
-      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      onClick={() =>
+        lenis ? lenis.scrollTo(0, { duration: 1.2 }) : window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
       aria-label="Back to top"
       data-cursor="hover"
       className="fixed bottom-6 right-6 z-[60] grid h-12 w-12 place-items-center rounded-full border border-line2 bg-ground text-ink transition-colors hover:border-accent hover:text-accent"

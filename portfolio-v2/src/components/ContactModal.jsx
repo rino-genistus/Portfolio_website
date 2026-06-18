@@ -1,18 +1,25 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion } from 'motion/react'
+import { useLenis } from 'lenis/react'
 import { FiX, FiMail, FiLinkedin, FiGithub } from 'react-icons/fi'
 import { PROFILE } from '../data'
+import { useModalA11y } from '../hooks'
 
 export default function ContactModal({ onClose }) {
+  const lenis = useLenis()
+  const panelRef = useRef(null)
+  useModalA11y(panelRef)
   useEffect(() => {
     const onKey = (e) => e.key === 'Escape' && onClose()
     window.addEventListener('keydown', onKey)
     document.body.style.overflow = 'hidden'
+    lenis?.stop()
     return () => {
       window.removeEventListener('keydown', onKey)
       document.body.style.overflow = ''
+      lenis?.start()
     }
-  }, [onClose])
+  }, [onClose, lenis])
 
   return (
     <motion.div
@@ -20,14 +27,19 @@ export default function ContactModal({ onClose }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={(e) => e.target === e.currentTarget && onClose()}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Contact me"
       className="fixed inset-0 z-[70] flex items-center justify-center bg-black/70 p-6 backdrop-blur-sm"
     >
       <motion.div
+        ref={panelRef}
+        tabIndex={-1}
         initial={{ y: 30, opacity: 0, scale: 0.97 }}
         animate={{ y: 0, opacity: 1, scale: 1 }}
         exit={{ y: 30, opacity: 0, scale: 0.97 }}
         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-md rounded-3xl border border-line2 bg-surface p-7"
+        className="w-full max-w-md rounded-3xl border border-line2 bg-surface p-7 outline-none"
       >
         <div className="mb-6 flex items-center justify-between">
           <h2 className="headline text-3xl">

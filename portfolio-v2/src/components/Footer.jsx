@@ -1,6 +1,6 @@
 import { FiMail, FiLinkedin, FiGithub, FiArrowUpRight } from 'react-icons/fi'
 import { PROFILE } from '../data'
-import { RevealLines, Reveal } from './primitives'
+import { RevealLines, Reveal, Magnetic } from './primitives'
 
 export default function Footer({ onContact }) {
   const year = new Date().getFullYear()
@@ -16,14 +16,16 @@ export default function Footer({ onContact }) {
 
         <Reveal delay={0.1}>
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            <button
-              onClick={onContact}
-              data-cursor="hover"
-              className="group flex items-center gap-2 rounded-full bg-accent px-7 py-4 text-sm font-medium text-accentInk"
-            >
-              Start a conversation
-              <FiArrowUpRight className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            </button>
+            <Magnetic strength={0.3}>
+              <button
+                onClick={onContact}
+                data-cursor="hover"
+                className="group flex items-center gap-2 rounded-full bg-accent px-7 py-4 text-sm font-medium text-accentInk"
+              >
+                Start a conversation
+                <FiArrowUpRight className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </button>
+            </Magnetic>
             <a
               href={`mailto:${PROFILE.email}`}
               data-cursor="hover"

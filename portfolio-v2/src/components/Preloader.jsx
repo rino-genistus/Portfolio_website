@@ -79,7 +79,7 @@ export default function Preloader({ onDone }) {
               style={{ width: `${count}%` }}
             />
           </div>
-          <span className="headline w-[2.5ch] text-right text-3xl tabular-nums sm:text-5xl">
+          <span className="headline w-[3ch] text-right text-3xl tabular-nums sm:text-5xl">
             {count}
           </span>
         </div>

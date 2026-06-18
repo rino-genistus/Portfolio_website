@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useScroll, useTransform } from 'motion/react'
+import { useLenis } from 'lenis/react'
 import { FiArrowDown, FiGithub, FiLinkedin, FiMail } from 'react-icons/fi'
 import { PROFILE } from '../data'
 import { Magnetic, Marquee, EASE } from './primitives'
@@ -26,13 +27,14 @@ function useEasternTime() {
 export default function Hero({ ready }) {
   const ref = useRef(null)
   const time = useEasternTime()
+  const lenis = useLenis()
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
   const y = useTransform(scrollYProgress, [0, 1], [0, 140])
   const fade = useTransform(scrollYProgress, [0, 0.8], [1, 0])
 
   const scroll = (id) => (e) => {
     e.preventDefault()
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    lenis?.scrollTo(`#${id}`, { offset: -72, duration: 1.2 })
   }
 
   return (
@@ -156,6 +158,27 @@ export default function Hero({ ready }) {
       >
         <Marquee items={PROFILE.roles} separator="✦" />
       </motion.div>
+
+      {/* scroll cue — fades away as the hero scrolls past */}
+      {ready && (
+        <motion.div
+          aria-hidden
+          style={{ opacity: fade, x: '-50%' }}
+          initial={{ y: 12 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 0.8, delay: 1.05, ease: EASE }}
+          className="pointer-events-none absolute bottom-5 left-1/2 hidden flex-col items-center gap-2.5 sm:flex"
+        >
+          <span className="mono text-[10px] uppercase tracking-[0.3em] text-dim">Scroll</span>
+          <span className="relative h-9 w-px overflow-hidden bg-line">
+            <motion.span
+              className="absolute inset-x-0 top-0 h-3 bg-accent"
+              animate={{ y: ['-100%', '300%'] }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+            />
+          </span>
+        </motion.div>
+      )}
     </section>
   )
 }

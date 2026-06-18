@@ -1,5 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
-import { motion, useMotionValue, useMotionTemplate, useSpring } from 'motion/react'
+import {
+  motion,
+  useMotionValue,
+  useMotionTemplate,
+  useSpring,
+  useScroll,
+  useVelocity,
+  useTransform,
+  useAnimationFrame,
+  wrap,
+} from 'motion/react'
 
 export const EASE = [0.16, 1, 0.3, 1]
 
@@ -135,14 +145,42 @@ export function RevealLines({ lines, className = '', lineClass = '', delay = 0, 
   )
 }
 
-/* ── Infinite marquee strip ── */
-export function Marquee({ items, separator = '✦', className = '', reverse = false }) {
+/* ── Infinite marquee strip ──
+   JS-driven so it can react to scroll: the band drifts at a base speed,
+   then speeds up + leans (skew) with scroll velocity and settles via a
+   spring. Falls back to a static row under reduced-motion. */
+export function Marquee({ items, separator = '✦', className = '', reverse = false, baseVelocity = 1.4 }) {
   const row = [...items, ...items]
+  const [reduce] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  )
+
+  const paused = useRef(false)
+  const baseX = useMotionValue(0)
+  const { scrollY } = useScroll()
+  const scrollVelocity = useVelocity(scrollY)
+  const smoothVelocity = useSpring(scrollVelocity, { damping: 50, stiffness: 380 })
+  const velocityFactor = useTransform(smoothVelocity, [0, 1000], [0, 6], { clamp: false })
+  const skew = useTransform(smoothVelocity, [-1500, 0, 1500], [-7, 0, 7], { clamp: true })
+  const x = useTransform(baseX, (v) => `${wrap(-50, 0, v)}%`)
+
+  useAnimationFrame((_, delta) => {
+    if (reduce || paused.current) return
+    const dt = delta / 1000
+    const base = (reverse ? -1 : 1) * baseVelocity * dt
+    const boost = velocityFactor.get() * dt
+    baseX.set(baseX.get() + base + boost)
+  })
+
   return (
-    <div className={`relative flex overflow-hidden ${className}`}>
-      <div
-        className="flex shrink-0 animate-marquee items-center"
-        style={reverse ? { animationDirection: 'reverse' } : undefined}
+    <div
+      className="relative flex overflow-hidden"
+      onMouseEnter={() => (paused.current = true)}
+      onMouseLeave={() => (paused.current = false)}
+    >
+      <motion.div
+        style={reduce ? undefined : { x, skewX: skew }}
+        className={`flex shrink-0 items-center will-change-transform ${className}`}
       >
         {row.map((it, i) => (
           <span key={i} className="flex items-center">
@@ -152,7 +190,7 @@ export function Marquee({ items, separator = '✦', className = '', reverse = fa
             </span>
           </span>
         ))}
-      </div>
+      </motion.div>
     </div>
   )
 }
